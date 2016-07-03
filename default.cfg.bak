@@ -1,0 +1,9 @@
+[Game]
+Packet=Test11
+MainUI=CrazyWallStreet.ui
+AppName=GodPay
+
+[Log]
+Warn=warn.log
+Debug=debug.log
+Error=Error.log
