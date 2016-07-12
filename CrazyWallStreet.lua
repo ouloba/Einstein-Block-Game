@@ -1590,31 +1590,24 @@ function EffectAnimateMenuHide(name,func)
 			AddWndUpdateFunc(wnd:GetChild(name), EffectZoomInFunc, {time=LXZAPI_timeGetTime()+300,step=0.05,from=1,max=1.2});
 			coroutine.yield();
 			
-			local  function waittime(tt)
-				AddWndUpdateFunc(wnd, EffectTimer, {time=LXZAPI_timeGetTime()+tt}, thread);	
+			local  function waittime(w,tt)
+				AddWndUpdateFunc(w, EffectTimer, {time=LXZAPI_timeGetTime()+tt}, thread);	
 				coroutine.yield();
 			end
 				
-			local pt = LXZPoint:new_local();									
-			wnd:GetChild("Continue"):GetHotPos(pt);
-			AddWndUpdateFunc(wnd:GetChild("Continue"), EffectMove, {speed=40*GameData.scale, dir=4, range=50, acce=5, fromx = pt.x, fromy = pt.y,x=pt.x-150*GameData.scale, y=pt.y, reset=true,  hide=true});
-			waittime(100);
-			
-			wnd:GetChild("ComboMode"):GetHotPos(pt);
-			AddWndUpdateFunc(wnd:GetChild("ComboMode"), EffectMove, {speed=40*GameData.scale, dir=4, range=50, acce=5, fromx = pt.x, fromy = pt.y,x=pt.x-150*GameData.scale, y=pt.y, reset=true,  hide=true});
-			waittime(100);
-						
-			wnd:GetChild("ScoreMode"):GetHotPos(pt);
-			AddWndUpdateFunc(wnd:GetChild("ScoreMode"), EffectMove, {speed=40*GameData.scale, dir=4, range=50, acce=5, fromx = pt.x, fromy = pt.y,x=pt.x-150*GameData.scale, y=pt.y, reset=true,  hide=true});
-			waittime(100);
-			
-			wnd:GetChild("Ranking"):GetHotPos(pt);
-			AddWndUpdateFunc(wnd:GetChild("Ranking"), EffectMove, {speed=40*GameData.scale, dir=4, range=50, acce=5, fromx = pt.x, fromy = pt.y,x=pt.x-150*GameData.scale, y=pt.y, reset=true,  hide=true});
-			waittime(100);
-						
-			wnd:GetChild("Option"):GetHotPos(pt);
-			AddWndUpdateFunc(wnd:GetChild("Option"), EffectMove, {speed=40*GameData.scale, dir=4, range=50, acce=5, fromx = pt.x, fromy = pt.y,x=pt.x-150*GameData.scale, y=pt.y, reset=true,  hide=true}, thread);
+					
+			local childNames={"Continue", "ComboMode","ScoreMode","Ranking","Option"};
+			for k,v in pairs(childNames) do
+				--wnd:GetChild(v):Show();
+				AddWndUpdateFunc(wnd:GetChild(v), EffectEase,{type=tween.QUAD, fn=tween.easeOut, begin=0, offset=0, change=200, duration=500,attribute="CLXZWindow:Hot:HotPosX",hide=true,reset=true}, thread);
+				waittime(wnd:GetChild(v),100);
+			end
 			coroutine.yield();
+			coroutine.yield();
+			coroutine.yield();
+			coroutine.yield();
+			coroutine.yield();
+
 					
 			wnd:DelBit(STATUS_IsDisable);
 			wnd:Hide();
@@ -1629,6 +1622,69 @@ function EffectAnimateMenuHide(name,func)
 	if(res==false) then		
 		LXZMessageBox("EffectAnimateMenuHide false :"..err);
 	end
+end
+
+function EffectEase(wnd, t)
+	if t.attribute== nil then
+		return true;
+	end
+	
+	if t.fn == nil then
+		return true;
+	end
+	
+	if t.attribute_ref == nil then
+		t.attribute_ref=wnd:GetAttributeNameRef(t.attribute);
+	end
+	
+	if t.offset == nil then
+		t.offset = 0;
+	end
+	
+	if t.origin == nil then
+		t.origin = wnd:GetAttribute(t.attribute_ref);
+	end
+	
+	if t.time == nil then
+		t.time = 0;
+	end
+	
+	if t.begin == nil then
+		t.begin = 0;
+	end
+	
+	if t.count==nil then
+		t.count=1;
+	end
+		
+	local v=t.fn(t.type,t.time,t.begin, t.change, t.duration)+t.origin+t.offset;
+	t.time=t.time+LXZAPI_GetFrameTime();
+	wnd:SetAttribute (t.attribute_ref, v);
+	
+	if t.time>=t.duration then
+		t.count=t.count-1;
+		if t.count<=0 then
+			if t.reset ~= nil then
+				wnd:SetAttribute (t.attribute_ref, t.origin);
+			end
+			
+			if t.hide~= nil then
+				wnd:Hide();
+			end
+			
+			if t.del ~= nil then
+				wnd:Delete();
+			end
+			
+			--kkk=kkk+1;
+			
+			return true;
+		else
+			t.time=0;
+		end	
+	end
+	
+	return false;
 end
 
 function EffectAnimateMenuShow()
@@ -1660,43 +1716,26 @@ function EffectAnimateMenuShow()
 			HelperSetWindowPictureFile(wnd:GetChild("Option"), "game5.png");
 			HelperSetWindowPicture(wnd:GetChild("Option"), "optionbkup");
 			
-			local  function waittime(tt)
-				AddWndUpdateFunc(wnd, EffectTimer, {time=LXZAPI_timeGetTime()+tt}, thread);	
+			local  function waittime(w,tt)
+				AddWndUpdateFunc(w, EffectTimer, {time=LXZAPI_timeGetTime()+tt}, thread);	
 				coroutine.yield();
+			end			
+					
+			local count = 0;
+			local childNames={"Continue", "ComboMode","ScoreMode","Ranking","Option"};
+			for k,v in pairs(childNames) do
+				wnd:GetChild(v):Show();
+				AddWndUpdateFunc(wnd:GetChild(v), EffectEase,{type=tween.BACK, fn=tween.easeIn, begin=0, offset=-200, change=200, duration=500,reset=true,attribute="CLXZWindow:Hot:HotPosX"}, thread);
+				waittime(wnd:GetChild(v),100);
+				count=count+1;
 			end
-			
-			local function fnMoveEnd(w, tblParam)
-				AddWndUpdateFunc(w, EffectShake, {interval=15, frame={{5,0},{4,0},{3,0},{2,0},{1,0}}, coe=1*GameData.scale});
-			end
-			
-			local pt = LXZPoint:new_local();
-			
-			wnd:GetChild("Continue"):Show();
-			wnd:GetChild("Continue"):GetHotPos(pt);
-			AddWndUpdateFunc(wnd:GetChild("Continue"), EffectMove, {speed=40*GameData.scale, dir=4, range=50, acce=5, fromx = pt.x+150*GameData.scale, fromy = pt.y,x=pt.x, y=pt.y, func=fnMoveEnd});
-			waittime(100);		
-			
-			wnd:GetChild("ComboMode"):Show();			
-			wnd:GetChild("ComboMode"):GetHotPos(pt);
-			AddWndUpdateFunc(wnd:GetChild("ComboMode"), EffectMove, {speed=40*GameData.scale, dir=4, range=50, acce=5, fromx = pt.x+150*GameData.scale, fromy = pt.y,x=pt.x, y=pt.y, func=fnMoveEnd});
-			waittime(100);		
-			
-			wnd:GetChild("ScoreMode"):Show();			
-			wnd:GetChild("ScoreMode"):GetHotPos(pt);
-			AddWndUpdateFunc(wnd:GetChild("ScoreMode"), EffectMove, {speed=40*GameData.scale, dir=4, range=50, acce=5, fromx = pt.x+150*GameData.scale, fromy = pt.y,x=pt.x, y=pt.y, func=fnMoveEnd});
-			waittime(100);		
-			
-			wnd:GetChild("Ranking"):Show();
-			wnd:GetChild("Ranking"):GetHotPos(pt);
-			AddWndUpdateFunc(wnd:GetChild("Ranking"), EffectMove, {speed=40*GameData.scale, dir=4, range=50, acce=5, fromx = pt.x+150*GameData.scale, fromy = pt.y,x=pt.x, y=pt.y, func=fnMoveEnd});
-			waittime(100);		
-			
-			wnd:GetChild("Option"):Show();
-			wnd:GetChild("Option"):GetHotPos(pt);
-			AddWndUpdateFunc(wnd:GetChild("Option"), EffectMove, {speed=40*GameData.scale, dir=4, range=50, acce=5, fromx = pt.x+150*GameData.scale, fromy = pt.y,x=pt.x, y=pt.y, func=fnMoveEnd}, thread);
+		
+			coroutine.yield();	
+			coroutine.yield();	
+			coroutine.yield();	
 			coroutine.yield();
-	
-			
+			coroutine.yield();	
+									
 			wnd:DelBit(STATUS_IsDisable);
 		end);	
 	local res,err = coroutine.resume(co, co);	
