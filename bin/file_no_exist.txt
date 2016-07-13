@@ -27,3 +27,9 @@ helpbtn.png.set
 setoption.png.set
 6.nlv
 6.lvl
+loginhead.png.set
+logintitle.png.set
+playbtn.png.set
+loginweibobtn.png.set
+helpbtn.png.set
+setoption.png.set

@@ -1599,7 +1599,7 @@ function EffectAnimateMenuHide(name,func)
 			local childNames={"Continue", "ComboMode","ScoreMode","Ranking","Option"};
 			for k,v in pairs(childNames) do
 				--wnd:GetChild(v):Show();
-				AddWndUpdateFunc(wnd:GetChild(v), EffectEase,{type=tween.QUAD, fn=tween.easeOut, begin=0, offset=0, change=200, duration=500,attribute="CLXZWindow:Hot:HotPosX",hide=true,reset=true}, thread);
+				AddWndUpdateFunc(wnd:GetChild(v), EffectEase,{type=tween.QUINT, fn=tween.easeIn, begin=0, offset=0, change=200, duration=300,attribute="CLXZWindow:Hot:HotPosX",hide=true,reset=true}, thread);
 				waittime(wnd:GetChild(v),100);
 			end
 			coroutine.yield();
@@ -1725,7 +1725,7 @@ function EffectAnimateMenuShow()
 			local childNames={"Continue", "ComboMode","ScoreMode","Ranking","Option"};
 			for k,v in pairs(childNames) do
 				wnd:GetChild(v):Show();
-				AddWndUpdateFunc(wnd:GetChild(v), EffectEase,{type=tween.BACK, fn=tween.easeIn, begin=0, offset=-200, change=200, duration=500,reset=true,attribute="CLXZWindow:Hot:HotPosX"}, thread);
+				AddWndUpdateFunc(wnd:GetChild(v), EffectEase,{type=tween.QUINT, fn=tween.easeOut, begin=0, offset=-200, change=200, duration=300,reset=true,attribute="CLXZWindow:Hot:HotPosX"}, thread);
 				waittime(wnd:GetChild(v),100);
 				count=count+1;
 			end
@@ -2097,8 +2097,13 @@ function EffectAnimateLoading()
 			wnd:GetChild("weibo"):Hide();
 			wnd:GetChild("help"):Hide();
 			wnd:GetChild("setoption"):Hide();
+			wnd:GetChild("play"):Hide();
+			
+			--AddWndUpdateFunc(root:GetLXZWindow("Load:play"), EffectEase,{type=tween.BOUNCE, fn=tween.easeInOut, begin=0, offset=-300, change=300, duration=500,reset=true,attribute="CLXZWindow:Hot:HotPosY"}, thread);
+			AddWndUpdateFunc(root:GetLXZWindow("Load:head"), EffectEase,{type=tween.BOUNCE, fn=tween.easeInOut, begin=0, offset=-300, change=300, duration=1000,reset=true,attribute="CLXZWindow:Hot:HotPosY"}, thread);
+			AddWndUpdateFunc(root:GetLXZWindow("Load:name"), EffectEase,{type=tween.BOUNCE, fn=tween.easeInOut, begin=0, offset=-300, change=300, duration=1000,reset=true,attribute="CLXZWindow:Hot:HotPosY"}, thread);
 	
-			root:GetLXZWindow("Load:play"):GetHotPos(pt);
+			--[[root:GetLXZWindow("Load:play"):GetHotPos(pt);
 			oldpt1.x = pt.x;
 			oldpt1.y = pt.y;
 			AddWndUpdateFunc(root:GetLXZWindow("Load:play"), EffectMove, {speed=10*GameData.scale, dir=2, range=20*GameData.scale, acce=5, fromx = pt.x, fromy = pt.y+300*GameData.scale,x=pt.x, y=pt.y, coe=5, min=1, playcnt=6}, thread);
@@ -2111,42 +2116,39 @@ function EffectAnimateLoading()
 			AddWndUpdateFunc(root:GetLXZWindow("Load:head"), EffectZoomInFunc, {time=LXZAPI_timeGetTime()+300,step=0.05,from=0.5,max=1});
 			
 			
+			
 			root:GetLXZWindow("Load:name"):GetHotPos(pt);
 			oldpt3.x = pt.x;
 			oldpt3.y = pt.y;
 			AddWndUpdateFunc(root:GetLXZWindow("Load:name"), EffectMove, {speed=10*GameData.scale, dir=1, range=20*GameData.scale, acce=5, fromx = pt.x, fromy = pt.y-300*GameData.scale,x=pt.x, y=pt.y, coe=5,min=1, playcnt=6}, thread);
-			
+			--]]
 			coroutine.yield();
-			coroutine.yield();
+			--coroutine.yield();
 			coroutine.yield();
 			
 			--PlayEffect("menu.wav");
-			AddWndUpdateFunc(root:GetLXZWindow("Load:head"), EffectShake, {interval=15, frame={{0,5},{0,4},{0,3},{0,2},{0,1}}, coe=6*GameData.scale});
+			--AddWndUpdateFunc(root:GetLXZWindow("Load:head"), EffectShake, {interval=15, frame={{0,5},{0,4},{0,3},{0,2},{0,1}}, coe=6*GameData.scale});
 		   -- AddWndUpdateFunc(root:GetLXZWindow("Load:name"), EffectSpringMove, {a=20, b = 0, c = 0, d=100,p=6});			
-			AddWndUpdateFunc(root:GetLXZWindow("Load:play"), EffectShake, {interval=15, frame={{0,5},{0,4},{0,3},{0,2},{0,1}}, coe=4*GameData.scale});
-			AddWndUpdateFunc(root:GetLXZWindow("Load:name"), EffectShake, {interval=15, frame={{0,5},{0,4},{0,3},{0,2},{0,1}}, coe=3*GameData.scale});
+			--AddWndUpdateFunc(root:GetLXZWindow("Load:play"), EffectShake, {interval=15, frame={{0,5},{0,4},{0,3},{0,2},{0,1}}, coe=4*GameData.scale});
+			--AddWndUpdateFunc(root:GetLXZWindow("Load:name"), EffectShake, {interval=15, frame={{0,5},{0,4},{0,3},{0,2},{0,1}}, coe=3*GameData.scale});
 			
-			--					
-			
-			wnd:GetChild("weibo"):Show();
-			root:GetLXZWindow("Load:weibo"):GetHotPos(pt);
-			AddWndUpdateFunc(root:GetLXZWindow("Load:weibo"), EffectMove, {speed=20*GameData.scale, dir=2, range=50, acce=0.05, fromx = pt.x, fromy = pt.y+80*GameData.scale,x=pt.x, y=pt.y}, thread);			
+			--		
+			wnd:GetChild("weibo"):Show();			
+			AddWndUpdateFunc(wnd:GetChild("weibo"), EffectEase,{type=tween.BOUNCE, fn=tween.easeInOut, begin=0, offset=50, change=-50, duration=300,reset=true,attribute="CLXZWindow:Hot:HotPosY"}, thread);
 			coroutine.yield();
-			AddWndUpdateFunc(root:GetLXZWindow("Load:weibo"), EffectShake, {interval=15, frame={{0,5},{0,4},{0,3},{0,2},{0,1}}, coe=2*GameData.scale});
-			--PlayEffect("click.wav");
 			
-			wnd:GetChild("help"):Show();
-			root:GetLXZWindow("Load:help"):GetHotPos(pt);
-			AddWndUpdateFunc(root:GetLXZWindow("Load:help"), EffectMove, {speed=20*GameData.scale, dir=2, range=50, acce=0.05, fromx = pt.x, fromy = pt.y+80*GameData.scale,x=pt.x, y=pt.y}, thread);
+			wnd:GetChild("help"):Show();		
+			AddWndUpdateFunc(wnd:GetChild("help"), EffectEase,{type=tween.BOUNCE, fn=tween.easeInOut, begin=0, offset=50, change=-50, duration=300,reset=true,attribute="CLXZWindow:Hot:HotPosY"}, thread);
 			coroutine.yield();
-			AddWndUpdateFunc(root:GetLXZWindow("Load:help"), EffectShake, {interval=15, frame={{0,5},{0,4},{0,3},{0,2},{0,1}}, coe=2*GameData.scale});
-			--PlayEffect("click.wav");
 			
-			wnd:GetChild("setoption"):Show();
-			root:GetLXZWindow("Load:setoption"):GetHotPos(pt);
-			AddWndUpdateFunc(root:GetLXZWindow("Load:setoption"), EffectMove, {speed=20*GameData.scale, dir=2, range=50, acce=0.05, fromx = pt.x, fromy = pt.y+80*GameData.scale,x=pt.x, y=pt.y}, thread);
+			wnd:GetChild("setoption"):Show();		
+			AddWndUpdateFunc(wnd:GetChild("setoption"), EffectEase,{type=tween.BOUNCE, fn=tween.easeInOut, begin=0, offset=50, change=-50, duration=300,reset=true,attribute="CLXZWindow:Hot:HotPosY"}, thread);
 			coroutine.yield();
-			AddWndUpdateFunc(root:GetLXZWindow("Load:setoption"), EffectShake, {interval=15, frame={{0,5},{0,4},{0,3},{0,2},{0,1}}, coe=2*GameData.scale});
+			
+			wnd:GetChild("play"):Show();
+			AddWndUpdateFunc(wnd:GetChild("play"), EffectEase,{type=tween.QUINT, fn=tween.easeOut, begin=0, offset=150, change=255, duration=300,reset=true,attribute="CLXZWindow:Mask:alpha"}, thread);
+			coroutine.yield();
+			
 		--	PlayEffect("menu.wav");
 			wnd:DelBit(STATUS_IsDisable);
 					
@@ -2160,7 +2162,7 @@ local function OnLoad(window, msg0, sender)
 	
 	--
 	local audio = SimpleAudioEngine:sharedEngine();
-	audio:preloadEffect("move.wav");
+	--[[audio:preloadEffect("move.wav");
 	audio:preloadEffect("move1.wav");
 	audio:preloadEffect("move2.wav");
 	audio:preloadEffect("itemboom.wav");
@@ -2168,7 +2170,7 @@ local function OnLoad(window, msg0, sender)
 	audio:preloadEffect("menu.wav");
 	audio:preloadEffect("desc.wav");
 	audio:preloadEffect("asc.wav");
-	audio:preloadEffect("continue.wav");	
+	audio:preloadEffect("continue.wav");	--]]
 	
 	--
 		
