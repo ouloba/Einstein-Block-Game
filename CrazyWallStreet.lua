@@ -1586,8 +1586,11 @@ function EffectAnimateMenuHide(name,func)
 			wnd:Show();
 			wnd:SetBit(STATUS_IsDisable);
 			
-			AddWndUpdateFunc(wnd:GetChild(name), EffectFaceOut, {time=LXZAPI_timeGetTime()+300, from=255,step=20}, thread);
-			AddWndUpdateFunc(wnd:GetChild(name), EffectZoomInFunc, {time=LXZAPI_timeGetTime()+300,step=0.05,from=1,max=1.2});
+			AddWndUpdateFunc(wnd:GetChild(name), EffectEase,{type=tween.QUINT, fn=tween.easeIn, begin=0, offset=-150, change=255, duration=100,attribute="CLXZWindow:Mask:alpha",reset=true}, thread,1);
+			AddWndUpdateFunc(wnd:GetChild(name), EffectEase,{type=tween.QUINT, fn=tween.easeIn, begin=0, offset=0, change=0.2, duration=100,attribute="CLXZWindow:Scale:fScaleX",reset=true}, thread,2);
+			AddWndUpdateFunc(wnd:GetChild(name), EffectEase,{type=tween.QUINT, fn=tween.easeIn, begin=0, offset=0, change=0.2, duration=100,attribute="CLXZWindow:Scale:fScaleY",reset=true}, thread,3);
+			coroutine.yield();
+			coroutine.yield();
 			coroutine.yield();
 			
 			local  function waittime(w,tt)
@@ -1599,8 +1602,8 @@ function EffectAnimateMenuHide(name,func)
 			local childNames={"Continue", "ComboMode","ScoreMode","Ranking","Option"};
 			for k,v in pairs(childNames) do
 				--wnd:GetChild(v):Show();
-				AddWndUpdateFunc(wnd:GetChild(v), EffectEase,{type=tween.QUINT, fn=tween.easeIn, begin=0, offset=0, change=200, duration=300,attribute="CLXZWindow:Hot:HotPosX",hide=true,reset=true}, thread);
-				waittime(wnd:GetChild(v),100);
+				AddWndUpdateFunc(wnd:GetChild(v), EffectEase,{type=tween.QUINT, fn=tween.easeIn, begin=0, offset=0, change=200, duration=200,attribute="CLXZWindow:Hot:HotPosX",hide=true,reset=true}, thread);
+				waittime(wnd:GetChild(v),60);
 			end
 			coroutine.yield();
 			coroutine.yield();
@@ -1725,8 +1728,8 @@ function EffectAnimateMenuShow()
 			local childNames={"Continue", "ComboMode","ScoreMode","Ranking","Option"};
 			for k,v in pairs(childNames) do
 				wnd:GetChild(v):Show();
-				AddWndUpdateFunc(wnd:GetChild(v), EffectEase,{type=tween.QUINT, fn=tween.easeOut, begin=0, offset=-200, change=200, duration=300,reset=true,attribute="CLXZWindow:Hot:HotPosX"}, thread);
-				waittime(wnd:GetChild(v),100);
+				AddWndUpdateFunc(wnd:GetChild(v), EffectEase,{type=tween.QUINT, fn=tween.easeOut, begin=0, offset=-200, change=200, duration=200,reset=true,attribute="CLXZWindow:Hot:HotPosX"}, thread);
+				waittime(wnd:GetChild(v),66);
 				count=count+1;
 			end
 		
